@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Amanda's blog</title>
+    <title>I'm Amanda</title>
     <description>Vyaasa is a minimal Jekyll theme meant for writers. Long text posts will look good with this layout. This is a free theme and can be used for all kinds of Jekyll blogs.
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 31 Oct 2016 11:15:47 +0800</pubDate>
-    <lastBuildDate>Mon, 31 Oct 2016 11:15:47 +0800</lastBuildDate>
+    <pubDate>Thu, 10 Nov 2016 23:00:19 +0800</pubDate>
+    <lastBuildDate>Thu, 10 Nov 2016 23:00:19 +0800</lastBuildDate>
     <generator>Jekyll v3.3.0</generator>
     
       <item>
@@ -35,96 +35,202 @@
       </item>
     
       <item>
-        <title>git introduction</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/image-2.png&quot; alt=&quot;sample post&quot; /&gt;&lt;/p&gt;
+        <title>Git Introduction</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;一、分布式版本管理系统&lt;/h3&gt;
+&lt;p&gt;git是分布式版本管理系统，如图1中所示，我们可以把git分为服务器端和客户端两个部分。客户端把文件从服务器端全部镜像到本地，进行操作后，把修改文件提交到服务器端。&lt;/p&gt;
 
-&lt;h1 id=&quot;header-1&quot;&gt;Header 1&lt;/h1&gt;
+&lt;p&gt;因为客户端本地有自己的版本数据库，不再受server端限制，多数操作在本地进行。因此，任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜 像出来的本地仓库恢复。因为每一次的提取操作，实际上都是一次对代码仓库的完整备份。&lt;/p&gt;
 
-&lt;h2 id=&quot;header-2&quot;&gt;Header 2&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/images/git-version-system.jpg&quot; alt=&quot;分布式版本控制系统&quot; /&gt;&lt;/p&gt;
+&lt;h6 id=&quot;section-1&quot;&gt;图1： 分布式版本控制系统&lt;/h6&gt;
 
-&lt;h3 id=&quot;header-3&quot;&gt;Header 3&lt;/h3&gt;
+&lt;h3 id=&quot;section-2&quot;&gt;二、非差异比较，直接文件快照&lt;/h3&gt;
+&lt;p&gt;相较于集中版本管理系统关心文件内容的差异，git更关心文件整体是否发生变化。git像一个微型文件系统，git 不保存文件前后变化的差异数据。Git 更像是把变化的文件作快照后，记录在一个微型的文件系统中。每次提交更新时，它会纵览一遍所有文件的指纹信息并对文件作一快照，然后保存一个指向这次快照的索引。为提高性能，若文件没有变化，Git 不会再次保存，而只对上次保存的快照作一链接。这是 Git 同其他系统的重要区别。它完全颠覆了传统版本控制的套路，并对各个环节的实现方式作了新的设计。&lt;/p&gt;
 
-&lt;h4 id=&quot;header-4&quot;&gt;Header 4&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;/images/git-file-snapshot.jpg&quot; alt=&quot;Git 保存每次更新时的文件快照&quot; /&gt;&lt;/p&gt;
+&lt;h6 id=&quot;git-&quot;&gt;图2： Git 保存每次更新时的文件快照&lt;/h6&gt;
 
-&lt;h5 id=&quot;header-5&quot;&gt;Header 5&lt;/h5&gt;
+&lt;h3 id=&quot;section-3&quot;&gt;三、近乎所有操作都是本地执行&lt;/h3&gt;
+&lt;p&gt;在 git 中的绝大多数操作都只需要访问本地文件和资源，不用连网。但如果用 CVCS 的话，差不多所有操作都需要连接网络。因为 git 在本地磁盘上就保存着所有当前项目的历史更新，所以处理起来速度飞快。 举个例子，如果要浏览项目的历史更新摘要，git 不用跑到外面的服务器上去取数据回来，而直接从本地数据库读取后展示给你看。所以任何时候你都可以马上翻阅，无需等待。如果想要看当前版本的文件和一个月 前的版本之间有何差异，git 会取出一个月前的快照和当前文件作一次差异运算，而不用请求远程服务器来做这件事，或是把老版本的文件拉到本地来作比较。 用 git 就算你在飞机或者火车上，都可以非常愉快地频繁提交更新，等到了有网络的时候再上传到远程仓库。&lt;/p&gt;
 
-&lt;h6 id=&quot;header-6&quot;&gt;Header 6&lt;/h6&gt;
-
-&lt;h2 id=&quot;paragraphs&quot;&gt;Paragraphs&lt;/h2&gt;
-
-&lt;p&gt;These are sample paragraphs showing &lt;em&gt;italics&lt;/em&gt;, &lt;strong&gt;bold&lt;/strong&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;code&lt;/code&gt; text style. Here is an unordered  list&lt;/p&gt;
+&lt;h4 id=&quot;b1gitb&quot;&gt;&lt;b&gt;1.git本地分区&lt;/b&gt;&lt;/h4&gt;
+&lt;p&gt;git有三个工作区&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Item 1&lt;/li&gt;
-  &lt;li&gt;Item 2&lt;/li&gt;
-  &lt;li&gt;Item 3&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;工作区：A Working Directory: where you’ll be doing all the work: creating, editing, deleting and organizing files&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  工作区可以理解为“创作区“，在工作区可以编辑（新建、删除、修改）文件
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;缓存区(索引区)：A Staging Area: where you’ll list changes you make to the working directory&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  缓存区可以理解为”变更记录区“，在工作区做了修改的文件，想要提交到仓库去，可能还有其他想法(想要攒一些文件一起提交/可能还要回退)，提交到缓存区，记录下已经变更的文件
+      
+  所谓的暂存区域只不过是个简单的文件，一般都放在 Git 目录中。有时候人们会把这个文件叫做索引文件，不过标准说法还是叫暂存区域。
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;本地仓库：A Repository: where Git permanently stores those changes as different versions of the project&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  文件被提交到本地仓库就会被记录到版本数据库中     
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;and an ordered list&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/git-work-stage-repository.jpg&quot; alt=&quot;Git 工作区&quot; /&gt;&lt;/p&gt;
+&lt;h6 id=&quot;section-4&quot;&gt;图3：工作目录，暂存区域，以及本地仓库&lt;/h6&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;Item 1&lt;/li&gt;
-  &lt;li&gt;Item 2&lt;/li&gt;
-  &lt;li&gt;Item 3&lt;/li&gt;
-&lt;/ol&gt;
+&lt;h4 id=&quot;b2gitb&quot;&gt;&lt;b&gt;2.git基本命令&lt;/b&gt;&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;git init 在当前目录创建一个新的git本地仓库&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git status 查看git project状态&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;A blockquote would look like this.&lt;/p&gt;
-&lt;/blockquote&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  一个Git项目中文件的状态大概分成下面的两大类，而第二大类又分为三小类：
 
-&lt;blockquote&gt;
-  &lt;p&gt;another one&lt;/p&gt;
+  1.未被跟踪的文件(untracked file)
 
-  &lt;p&gt;with multiple lines&lt;/p&gt;
-&lt;/blockquote&gt;
+  2.已被跟踪的文件(tracked file)
 
-&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.&lt;/p&gt;
+  - 2.1.被修改但未被暂存的文件（changed but not updated或modified）
+  - 2.2.已暂存可以被提交的文件（changes to be committed 或staged）
+  - 2.3.自上次提交以来，未修改的文件(clean 或 unmodified)
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git add “filename” 添加文件&lt;/p&gt;
 
-&lt;p&gt;A code block would look like this.&lt;/p&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  把file添加到git的staging area
+      
+  git add 后面可以跟多个filename 即：可以同时提交多个文件到staging area
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git diff “filename”&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;nav&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;About&lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;Contact&lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;Project&lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  把working directory文件和staging area文件进行diff操作
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;git commit&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.&lt;/p&gt;
+&lt;p&gt;提交缓冲区的文件到仓库，-m参数后跟该次commit描述&lt;/p&gt;
 
-&lt;p&gt;This is a simple markdown table&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;git log&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Tables&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;Are&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;Cool&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;col 3 is&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;right-aligned&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;$1600&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;col 2 is&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;centered&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;$12&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;zebra stripes&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;are neat&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;$1&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;查看commit的日志
+          SHA     作者     日期     commit描述&lt;/p&gt;
 
-&lt;p&gt;Use below code to show &lt;strong&gt;Table of Contents&lt;/strong&gt; on a page&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git show HEAD&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-css&quot; data-lang=&quot;css&quot;&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;Do&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;remove&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;will&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;displayed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:toc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    输出结果为所有commit信息
+    这个展示的结果比git log详细一些
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;b3gitb&quot;&gt;&lt;b&gt;3.git的回滚&lt;/b&gt;&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git checkout HEAD filename&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    当修改了工作区的某文件后，想回退至上次commit的状态
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git reset HEAD filename&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    将file同步为repository 最后一次提交的版本 staging area区域的文件
+    也就是说当我不小心修改了工作区的文件，并且 add到staging area后，想要回滚
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git reset SHA&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    This command works by using the first 7 characters of the SHA of a previous commit.
+    恢复的还是缓存区的数据
+    回滚到前一个版本
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;b4branchb&quot;&gt;&lt;b&gt;4.branch&lt;/b&gt;&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git branch		查询当前在哪个分支&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git branch NewBranchName		创建一个新的branch&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git checkout branch_name		切换git的分支&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git merge branch_name&lt;/p&gt;
+
+ 			进行合并工作是将分支的changes合并至master
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 	切换到master才能进行merge
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;git merge conflict 合并冲突&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git branch -d branch_name&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 	我们创建branch有了结果后，最终会合并到master中，那么branch就可以删除了，我们使用-d option进行删除
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;b5gitb&quot;&gt;&lt;b&gt;5.多人协同使用git&lt;/b&gt;&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git clone remote_location clone_name&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git remote -V		查询远程仓库的版本&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git fetch&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;将更新放在remote branch
+          git pull = git fetch + merge to local&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;git merge origin/master&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;将更新merge到本地&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;git push origin your_branch_name&lt;/li&gt;
+&lt;/ul&gt;
 </description>
         <pubDate>Fri, 28 Oct 2016 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/git/</link>
