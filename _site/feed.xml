@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 10 Nov 2016 23:00:19 +0800</pubDate>
-    <lastBuildDate>Thu, 10 Nov 2016 23:00:19 +0800</lastBuildDate>
+    <pubDate>Fri, 11 Nov 2016 15:04:08 +0800</pubDate>
+    <lastBuildDate>Fri, 11 Nov 2016 15:04:08 +0800</lastBuildDate>
     <generator>Jekyll v3.3.0</generator>
     
       <item>
@@ -186,16 +186,11 @@
   &lt;li&gt;
     &lt;p&gt;git merge branch_name&lt;/p&gt;
 
- 			进行合并工作是将分支的changes合并至master
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 	切换到master才能进行merge
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      进行合并工作是将分支的changes合并至master
+      切换到master才能进行merge
 &lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
   &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;git merge conflict 合并冲突&lt;/p&gt;
-
-&lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;git branch -d branch_name&lt;/p&gt;
 
@@ -215,21 +210,18 @@
     &lt;p&gt;git remote -V		查询远程仓库的版本&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;git fetch&lt;/p&gt;
+    &lt;p&gt;git fetch 将更新放在remote branch&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	git pull = git fetch + merge to local
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
   &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;将更新放在remote branch
-          git pull = git fetch + merge to local&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;git merge origin/master&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;将更新merge到本地&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;git push origin your_branch_name&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git merge origin/master 将更新merge到本地&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;git push origin your_branch_name&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Fri, 28 Oct 2016 00:00:00 +0800</pubDate>
