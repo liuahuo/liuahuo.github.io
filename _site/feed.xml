@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 11 Nov 2016 15:04:08 +0800</pubDate>
-    <lastBuildDate>Fri, 11 Nov 2016 15:04:08 +0800</lastBuildDate>
+    <pubDate>Tue, 13 Dec 2016 10:53:27 +0800</pubDate>
+    <lastBuildDate>Tue, 13 Dec 2016 10:53:27 +0800</lastBuildDate>
     <generator>Jekyll v3.3.0</generator>
     
       <item>
@@ -314,6 +314,209 @@
         <pubDate>Sat, 17 Sep 2016 02:04:56 +0800</pubDate>
         <link>http://localhost:4000/all-text/</link>
         <guid isPermaLink="true">http://localhost:4000/all-text/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Linux单用户模式及grub使用</title>
+        <description>&lt;h3 id=&quot;rootroot&quot;&gt;对于遗忘root用户密码的解决方法就是，启动时进入单用户模式，重新修改root用户口令。&lt;/h3&gt;
+
+&lt;h4 id=&quot;centos6x&quot;&gt;CentOS6.x&lt;/h4&gt;
+
+&lt;p&gt;在打完oepnssh补丁升级完openssl后，没有验证ssh功能是否恢复正常就将telnet服务关闭了，导致该服务器无法远程。直连服务器发现图形化界面无法正常进入，此时只能使用单用户模式进入服务器进行操作。&lt;/p&gt;
+
+&lt;p&gt;单用户模式，就是你现在站在这台机器面前能干的活，再通俗点就是你能够接触到这个物理设备。一般干这个活的话，基本上是系统出现严重故障或者root密码忘记等等。&lt;/p&gt;
+
+&lt;p&gt;使用单用户登录时，我们会使用到一个叫grub的工具。GRUB是Linux系统的自举程序，也就是用来引导系统启动的程序，其主要作用就是指定Linux系统内核的位置，然后指定根目录所在的分区。当Linux系统得到可以运行的内核和根文件系统后，才可以运行，所以启动程序是非常重要的。&lt;/p&gt;
+
+&lt;h5 id=&quot;grubvim-grub&quot;&gt;grub工具的使用类似vim编辑器， 使用grub工具进行单用户登录的步骤如下：&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在开机启动的时候能看到引导目录，用上下方向键选择你忘记密码的那个系统，然后按“e”表示进入编辑模式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/first.png&quot; alt=&quot;选择启动系统内核&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;编辑原有行，直接移动黑色显示条到改行，然后按“e”，进入对该行的编辑模式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/second.png&quot; alt=&quot;编辑选中的内核&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;输入single或者1后回车，回车后grub回到引导目录的编辑状态&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/third.png&quot; alt=&quot;编辑选中的内核增加single模式&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;按“b”，启动系统进入单机模式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/fourth.png&quot; alt=&quot;进入single模式&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;然后就进入到了单用户模式，可以对操作系统进行一些配置（如打开Telnet,修改root密码等）&lt;/p&gt;
+
+&lt;h4 id=&quot;centos7x&quot;&gt;CentOS7.x&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;开机启动时，选中想要启动的内核，按e进入编辑模式；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/choosekernel.png&quot; alt=&quot;修改内核启动参数&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ro-&amp;gt;rw&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;原本呢加载内核为ro只读方式，在进入系统后，内核可以被root用户修改
+但是单用户模式实际上没有进入系统，而我们要修改参数所以要把权限放开为rw可读可写。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;init=/sysroot/bin/sh 启动后进入shell&lt;/li&gt;
+  &lt;li&gt;ctl+x启动该内核&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/editkernel.png&quot; alt=&quot;修改内核启动参数&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;chroot /sysroot&lt;/li&gt;
+  &lt;li&gt;在单用户模式下进行操作，例如：修改root密码&lt;/li&gt;
+  &lt;li&gt;touch /.autorelabel（SELinux开启的时候需要操作这一步）&lt;/li&gt;
+  &lt;li&gt;exit 退出sysroot&lt;/li&gt;
+  &lt;li&gt;exec /sbin/reboot或者exec /sbin/init&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/linux-singleuser/singleusermode.png&quot; alt=&quot;修改内核启动参数&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 26 Aug 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/linux-singleuser/</link>
+        <guid isPermaLink="true">http://localhost:4000/linux-singleuser/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>进入docker容器的方法</title>
+        <description>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;登陆容器的方式&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;ssh登录&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;第三方工具(nsenter、nsinit)&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;docker提供的工具(attach、exec)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;优点&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;符合平时登录服务器习惯，不用额外学习&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;使用方便快捷&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;使用方便快捷&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;缺点&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;1.秘钥管理2.ssh升级3.监控&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.需要学习第三方工具使用规则2.docker宿主机root权限&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1.使用attach登录容器，exit退出容器2.docker宿主机root权限3.同屏&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;适用范围&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;1.适用docker宿主机登录至容器内部2.远程登录该容器&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;适用docker宿主机登录至容器内部&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;适用docker宿主机登录至容器内部&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;ssh&quot;&gt;SSH&lt;/h2&gt;
+
+&lt;p&gt;使用方法： ssh 用户@IP地址 -p 端口
+一般ssh登录走22端口，但是在docker中bridge网络模式使用NAT做端口映射，端口需要特殊标注&lt;/p&gt;
+
+&lt;p&gt;适用范围：docker宿主机内部登录容器，外部终端直接登录容器&lt;/p&gt;
+
+&lt;p&gt;优点：符合管理员、开发者登录服务器的习惯，不需要进行额外的学习&lt;/p&gt;
+
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.秘钥管理
+如果将秘钥写到镜像中，当需要更新秘钥时需要重新制作镜像，部署，重启容器，虽然这个步骤繁琐，但是个人认为还是安全的。如果将秘钥写到卷中，首先要保证该容器没有这个卷的写权限，否则存在秘钥被篡改的风险。&lt;/li&gt;
+  &lt;li&gt;2.ssh升级或打补丁
+ssh有漏洞或者版本升级时，需要对每一个容器进行打补丁或者升级操作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;nsenter&quot;&gt;nsenter工具&lt;/h2&gt;
+
+&lt;p&gt;nsenter工具的安装：&lt;/p&gt;
+
+&lt;p&gt;wget https://www.kernel.org/pub/linux/utils/util-linux/v2.28/util-linux-2.28.tar.gz&lt;/p&gt;
+
+&lt;p&gt;tar -xzvf util-linux-2.28.tar.gz&lt;/p&gt;
+
+&lt;p&gt;cd util-linux-2.28
+./configure –without-ncurses&lt;/p&gt;
+
+&lt;p&gt;make nsenter&lt;/p&gt;
+
+&lt;p&gt;cp nsenter /usr/local/bin&lt;/p&gt;
+
+&lt;p&gt;安装完成后，使用nsenter —help 命令查看，可以看到使用方法及参数则证明安装成功。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/enter-docker/nsenter-option.png&quot; alt=&quot;nsenter-option&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使用nsenter 命令登录docker 容器&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/enter-docker/nsenter.png&quot; alt=&quot;nsenter-option&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在使用nsenter登录docker 容器时，一般使用前6个参数(我看别人都这么写的，想了想原因，可能使用前6个参数就可以涵盖网络，磁盘，进程管理操作系统基本的信息，我尝试只使用其中一个或几个参数登录容器，成功了但是操作系统功能使用上受限制，比如无法使用网络配置功能等)。&lt;/p&gt;
+
+&lt;h2 id=&quot;docker-attach&quot;&gt;docker attach&lt;/h2&gt;
+
+&lt;p&gt;使用方法：docker attach  [container name]&lt;/p&gt;
+
+&lt;p&gt;适用范围：docker宿主机内部登录容器&lt;/p&gt;
+
+&lt;p&gt;优点：快捷方便&lt;/p&gt;
+
+&lt;p&gt;缺点：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.exit后直接退出该container&lt;/li&gt;
+  &lt;li&gt;2.多屏同步 这相当于同一时间最多只能有一个终端连接容器&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/enter-docker/attach.png&quot; alt=&quot;attach&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/enter-docker/attach-same-screen.png&quot; alt=&quot;attach same screen&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;docker-exec&quot;&gt;docker exec&lt;/h2&gt;
+&lt;p&gt;使用方法：docker exec -it [container name] [command]&lt;/p&gt;
+
+&lt;p&gt;适用范围：docker宿主机内部登录容器&lt;/p&gt;
+
+&lt;p&gt;优点：快捷方便&lt;/p&gt;
+
+&lt;p&gt;缺点：外部终端无法使用这种方法登录容器&lt;/p&gt;
+
+&lt;p&gt;使用参数介绍：&lt;/p&gt;
+
+&lt;p&gt;-i, –interactive               Keep STDIN open even if not attached ————交互&lt;/p&gt;
+
+&lt;p&gt;-t, –tty                        Allocate a pseudo-TTY————分配伪终端&lt;/p&gt;
+
+&lt;p&gt;一般情况会使用-it这个组合命令，如果单用也只能单独使用-i命令&lt;/p&gt;
+
+&lt;p&gt;-i 参数不会产生伪终端，但是会有正确的返回&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/enter-docker/exec.png&quot; alt=&quot;attach same screen&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使用-it时，则和我们平常操作console界面类似。而且也不会像attach方式因为退出，导致整个容器退出。这种方式可以替代ssh或者nsenter、nsinit方式，在容器内进行操作。&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 18 Aug 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/How-to-enter-docker/</link>
+        <guid isPermaLink="true">http://localhost:4000/How-to-enter-docker/</guid>
         
         
       </item>
