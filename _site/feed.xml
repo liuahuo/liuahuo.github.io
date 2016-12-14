@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 13 Dec 2016 10:53:27 +0800</pubDate>
-    <lastBuildDate>Tue, 13 Dec 2016 10:53:27 +0800</lastBuildDate>
+    <pubDate>Wed, 14 Dec 2016 11:36:55 +0800</pubDate>
+    <lastBuildDate>Wed, 14 Dec 2016 11:36:55 +0800</lastBuildDate>
     <generator>Jekyll v3.3.0</generator>
     
       <item>
@@ -518,6 +518,89 @@ ssh有漏洞或者版本升级时，需要对每一个容器进行打补丁或�
         <link>http://localhost:4000/How-to-enter-docker/</link>
         <guid isPermaLink="true">http://localhost:4000/How-to-enter-docker/</guid>
         
+        
+      </item>
+    
+      <item>
+        <title>制作docker image</title>
+        <description>&lt;h3 id=&quot;febootstrapbase-image&quot;&gt;1.使用febootstrap制作base image&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;制作镜像目录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在Docker入门（http://blog.csdn.net/woshiluahuo/article/details/51838451）中，我们讲到base image，现在要使用febootstrap工具制作base image：&lt;/p&gt;
+
+&lt;p&gt;febootstrap -i bash -i wget -i yum -i iputils -i iproute -i man -i vim -i openssh-server -i openssh-clients -i tar -i
+      gzip centos7 centos7-image http://mirrors.aliyun.com/centos/7/os/x86_64/&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1.-i 表示需要安装的package，例如上面的语句：想要base image中安装：bash、wget、yum、iputils、iproute 、man、vim 、openssh-server、openssh-clients、tar 、gzip&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这个可以根据自己的需要进行安装，其中openssh-server、openssh-clients这2个包是为了后面ssh登录准备的。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;2.centos7 是操作系统版本&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;3.centos7-image 是目录（base image想放在服务器的位置）&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;4.源地址，我选择的是阿里云的，也可以使用其他源地址&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;执行完上面的语句会生成centos7-image文件目录，包含以下文件：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/make-docker-image/directory.png&quot; alt=&quot;directory&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;root目录下是空的，如果这时制作出来的镜像使用ssh登录，会直接进入根目录下，而一般镜像都是进入root目录下的，        &lt;br /&gt;
+所以执行：cd centos7-image &amp;amp;&amp;amp; cp etc/skel/.bash* root/语句，将.bash_logout  .bash_profile  .bashrc这三个文件拷贝至root文件夹下。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;生成base image&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;执行：cd centos7-image &amp;amp;&amp;amp; tar -c .|docker import - centos7-base 语句，将centos7-image目录下内容打包并将打包内容创建为一个docker镜像。
+查看镜像，发现镜像中有一个名为：centos7-base的镜像&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/make-docker-image/base-image.png&quot; alt=&quot;base image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;此时，我们已经可以将centos7-base镜像运行在docker的container中了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/make-docker-image/run-base-image.png&quot; alt=&quot;run base image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dockfilesshimage&quot;&gt;2.使用Dockfile制作可以使用ssh登录的image&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;dockfile&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以我们刚刚制作的centos7-base作为base image，使用dockfile制作可以使用ssh登录的image。创建名为：Dockfile的文件，内容如下：&lt;br /&gt;
+ #Dockerfile &lt;br /&gt;
+FROM centos7-base  #将centos7-base作为base image，类似继承的概念，制作出的新的image具有base image的功能&lt;br /&gt;
+MAINTAINER ahuo&lt;br /&gt;
+RUN ssh-keygen -q -N “” -t dsa -f /etc/ssh/ssh_host_dsa_key&lt;br /&gt;
+RUN ssh-keygen -q -N “” -t rsa -f /etc/ssh/ssh_host_rsh_key&lt;br /&gt;
+RUN sed -ri ‘s/session    required     pam_loginuid.so/#session    required     pam_loginuid.so/g’ /etc/pam.d/sshd&lt;br /&gt;
+RUN mkdir -p /root/.ssh &amp;amp;&amp;amp; chown root.root /root &amp;amp;&amp;amp; chmod 700 /root/.ssh&lt;br /&gt;
+ #上面几行都是配置ssh登录目录和登录验证的，而ssh的安装时在base image centos7-base中完成的(-i openssh-server -i openssh-client)&lt;br /&gt;
+EXPOSE 22 #开端口&lt;br /&gt;
+RUN echo ‘root:redhat’ | chpasswd #重置root密码为redhat&lt;br /&gt;
+RUN yum install tar gzip gcc vim wget -y&lt;br /&gt;
+ENV LANG en_US.UTF-8&lt;br /&gt;
+ENV LC_ALL en_US.UTF-8&lt;br /&gt;
+CMD /usr/sbin/sshd -D&lt;br /&gt;
+ #End&lt;/p&gt;
+</description>
+        <pubDate>Mon, 11 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/make-docker-image/</link>
+        <guid isPermaLink="true">http://localhost:4000/make-docker-image/</guid>
+        
+        
+        <category>test</category>
         
       </item>
     
