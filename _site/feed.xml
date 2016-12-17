@@ -2,12 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>I'm Amanda</title>
-    <description>Vyaasa is a minimal Jekyll theme meant for writers. Long text posts will look good with this layout. This is a free theme and can be used for all kinds of Jekyll blogs.
+    <description>I'm so happy to be friend with you.
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 14 Dec 2016 11:36:55 +0800</pubDate>
-    <lastBuildDate>Wed, 14 Dec 2016 11:36:55 +0800</lastBuildDate>
+    <pubDate>Fri, 16 Dec 2016 14:07:11 +0800</pubDate>
+    <lastBuildDate>Fri, 16 Dec 2016 14:07:11 +0800</lastBuildDate>
     <generator>Jekyll v3.3.0</generator>
     
       <item>
@@ -229,6 +229,8 @@
         <guid isPermaLink="true">http://localhost:4000/git/</guid>
         
         
+        <category>git</category>
+        
       </item>
     
       <item>
@@ -395,6 +397,8 @@
         <guid isPermaLink="true">http://localhost:4000/linux-singleuser/</guid>
         
         
+        <category>linux</category>
+        
       </item>
     
       <item>
@@ -519,6 +523,8 @@ ssh有漏洞或者版本升级时，需要对每一个容器进行打补丁或�
         <guid isPermaLink="true">http://localhost:4000/How-to-enter-docker/</guid>
         
         
+        <category>docker</category>
+        
       </item>
     
       <item>
@@ -594,13 +600,181 @@ ENV LANG en_US.UTF-8&lt;br /&gt;
 ENV LC_ALL en_US.UTF-8&lt;br /&gt;
 CMD /usr/sbin/sshd -D&lt;br /&gt;
  #End&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/make-docker-image/build-image.png&quot; alt=&quot;bulid image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在centos7-image目录下，执行build命令，centos7-ssh 是生成的image名字，后面跟Dockfile所在目录。
+此时，我们可以看到image多了一个centos7-ssh的镜像。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/make-docker-image/docker-image.png&quot; alt=&quot;docker image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;验证ssh登录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;1.docker run -d centos-ssh:latest /bin/bash&lt;br /&gt;
+   运行centos-ssh镜像生成一个容器，-d表示在后台运行。&lt;br /&gt;
+ 2.此时，使用docker ps -a 命令可以看到启动的容器。&lt;br /&gt;
+ &lt;img src=&quot;/images/make-docker-image/docker-ps.png&quot; alt=&quot;docker ps&quot; /&gt;&lt;br /&gt;
+ 3.使用docker inspect CONTAINER ID查看容器的信息
+ &lt;img src=&quot;/images/make-docker-image/docker-inspect.png&quot; alt=&quot;docker inspect&quot; /&gt;&lt;br /&gt;
+ &lt;img src=&quot;/images/make-docker-image/docker-inspect-ip.png&quot; alt=&quot;docker inspect ip&quot; /&gt;  &lt;br /&gt;
+ 找到IP地址&lt;br /&gt;
+4.使用ssh root@172.17.0.2登录容器，密码是dockfile中修改的redhat&lt;br /&gt;
+具有其他功能的image也是同样的方法制作，验证。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;3.用容器快速制作镜像&lt;/h3&gt;
+&lt;p&gt;为了更好的理解和使用docker镜像、容器，决定使用base image 安装oracle后，打包容器制作为oracle镜像。使用容器制作镜像的好处有:&lt;br /&gt;
+     第一就是可以步步为营。当你制作一个比较复杂点的镜像时，不可能一步就能做成功，所以当你觉得下面一步可能要出错时（不可逆的错误），可以先把该镜像打个包，如果接下来失误了，删掉这个容器，再用刚才打包好的镜像做个容器，继续前面的步骤。&lt;br /&gt;
+        第二就是不管你在容器中怎么折腾都没关系，大不了删除掉这个容器，如果你在物理服务器上就要相当注意了，要不然duang的一下，整个服务器就瘫痪了。&lt;br /&gt;
+        第三好处和第一个差不多，因为有些数据库不能测试的，你一测试就会产生很大的数据（日志，还有些默认的数据）（我做mongodb镜像时，测试了下打包后的镜像竟然达到4个多G，而没测试的就几百MB，相差太大了），因为docker镜像不能太大，否则不好上传。所以一般是做好了，先打个包成镜像，然后接着测试下，如果成功。那就可以了。&lt;br /&gt;
+     理想很丰满，显示很骨干，在安装oracle过程中，报错啦。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/make-docker-image/oracle-error.png&quot; alt=&quot;oracle error&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个报错是因为，oracle安装对hostname有要求，要求hostname中不能包含数字，但是docker在运行镜像为容器的过程中会自动为容器分配一个id，这个id是由数字和字母组成的。无法使用一般修改hostname的办法修改容器的hostname，看到网上有使用docker-compose工具修改容器hostname的，我没有尝试(恩，是因为懒，如果尝试了再来更新)。ps：docker run —add-host这个并不是修改hostname啊~&lt;br /&gt;
+     虽然没有成功使用容器制作oracle镜像，但是理论上使用容器制作镜像的语句为：&lt;br /&gt;
+     docker commit  xxx(容器的id)   xxxx（要制作成的镜像名）&lt;br /&gt;
+     最后使用docker search oracle查找了下oracle镜像，&lt;br /&gt;
+      &lt;img src=&quot;/images/make-docker-image/docker-search.png&quot; alt=&quot;docker search&quot; /&gt;&lt;br /&gt;
+然后 docker pull docker.io/wnameless/oracle-xe-11g，下载完成后可以看到镜像列表中添加了一个oracle-xe-11g的镜像。&lt;br /&gt;
+&lt;img src=&quot;/images/make-docker-image/docker-images.png&quot; alt=&quot;docker images&quot; /&gt; &lt;br /&gt;
+运行该镜像为容器，进入容器后，su - oracle 切换到oracle用户，可以看到oracle的安装目录，可以运行sqlplus / as sysdba命令进入到数据库中。&lt;/p&gt;
+
 </description>
         <pubDate>Mon, 11 Jul 2016 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/make-docker-image/</link>
         <guid isPermaLink="true">http://localhost:4000/make-docker-image/</guid>
         
         
-        <category>test</category>
+        <category>docker</category>
+        
+      </item>
+    
+      <item>
+        <title>docker的离线安装</title>
+        <description>&lt;p&gt;网络上有很多docker安装的教程，大多都是在线安装、一键搞定的。因为网络环境问题，需要离线安装docker，成功后分享下过程，方便学习。&lt;/p&gt;
+&lt;h4 id=&quot;section&quot;&gt;1.准备工作&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;操作系统&lt;br /&gt;
+docker需要64位的内核版本3.10以上的操作系统支持。&lt;br /&gt;
+        查看操作系统位数：getconf LONG_BIT&lt;br /&gt;
+        查看内核版本：uname -r&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;依赖组件&lt;br /&gt;
+docker容器资源管理使用cgroups(control groups)，所以需要在安装docker前下载安装cgroups组件
+        推荐一个下载rpm的网站：http://pkgs.org/（下面的所有rpm包都可以在这个网站下载）&lt;br /&gt;
+        需要下载以下4个rpm：&lt;br /&gt;
+&lt;img src=&quot;/images/docker-install/docker-depentence.png&quot; alt=&quot;cgroup&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;docker引擎rpm&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;另外还需要下载：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;febootstrap工具&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;febootstrap是制作镜像的工具。需要下载以下7个rpm:
+ &lt;img src=&quot;/images/docker-install/febootstrap1.png&quot; alt=&quot;febootstrap1&quot; /&gt;&lt;br /&gt;
+ &lt;img src=&quot;/images/docker-install/febootstrap2.png&quot; alt=&quot;febootstrap2&quot; /&gt;&lt;br /&gt;
+ &lt;img src=&quot;/images/docker-install/febootstrap3.png&quot; alt=&quot;febootstrap1=3&quot; /&gt;&lt;br /&gt;
+ &lt;img src=&quot;/images/docker-install/febootstrap4.png&quot; alt=&quot;febootstrap4&quot; /&gt;&lt;/p&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;2.安装&lt;/h4&gt;
+&lt;p&gt;将依赖组件、docker引擎、febootstrap的rpm包依次安装。 
+安装完成后，输入docker命令，即可查看docker所有的命令（截图有限，没有截到全部的命令）&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/docker-install/docker-command.png&quot; alt=&quot;docker command&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Wed, 06 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/docker-install/</link>
+        <guid isPermaLink="true">http://localhost:4000/docker-install/</guid>
+        
+        
+        <category>docker</category>
+        
+      </item>
+    
+      <item>
+        <title>docker入门</title>
+        <description>&lt;p&gt;1.什么是docker&lt;br /&gt;
+     Docker是一个开源的引擎，可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。提到Docker人们总会将它列为虚拟化产品，将其类比VMware产品，了解了docker运行原理和container的概念后，你会发现docker不仅可以实现虚拟化，还能应用于以下场景：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;应用的打包和发布&lt;/li&gt;
+  &lt;li&gt;部署和调整数据库或其他应用&lt;/li&gt;
+  &lt;li&gt;标准化开发、测试环境&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;2.什么是container&lt;br /&gt;
+&lt;img src=&quot;/images/docker-introduction/container.jpg&quot; alt=&quot;container&quot; /&gt; &lt;br /&gt;
+VMs将整个操作系统运行在虚拟的硬件平台上，提供完整的运行环境给应用程序。对比VMs来看Containers，Container和普通的虚拟机Image相比, 最大的区别是它并不包含操作系统内核，也就是省掉了GuestOS这一层，直接在Host上加载运行应用程序。&lt;br /&gt;
+     为什么Container能够直接在host上直接加载运行程序呢？这个和linux操作系统特性密切相关。
+首先先普及几个基础知识：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;AUFS（Another Union File System）AUFS (AnotherUnionFS) 是一种 Union FS, 简单来说就是支持将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)的文件系统。Docker 在 AUFS 上构建的 container image 就使用了这种特性，接下来从启动 container 中的 linux 为例来介绍 docker 对AUFS特性的运用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;典型的linux启动需要2个FS：bootfs+rootfs。&lt;br /&gt;
+bootfs (boot file system) 主要包含 bootloader 和 kernel, bootloader主要是引导加载kernel, 当boot成功后 kernel被加载到内存中后 bootfs就被umount了。&lt;br /&gt;
+rootfs (root file system) 包含的就是典型 Linux 系统中的 /dev, /proc,/bin, /etc 等标准目录和文件。&lt;br /&gt;
+对于不同的linux发行版, bootfs基本是一致的, 但rootfs会有差别, 因此不同的发行版可以公用bootfs。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;container和image
+典型的Linux在启动后，首先将 rootfs 设置为 readonly, 进行一系列检查, 然后将其切换为 “readwrite” 供用户使用。&lt;br /&gt;
+在Docker中，初始化时也是将 rootfs 以readonly方式加载并检查，然而接下来利用 union mount 的方式将一个readwrite 文件系统挂载在 readonly 的rootfs之上，并且允许再次将下层的 FS(file system) 设定为readonly 并且向上叠加, 这样一组readonly和一个writeable的结构构成一个container的运行时态, 每一个FS被称作一个FS层。如下图:&lt;br /&gt;
+&lt;img src=&quot;/images/docker-introduction/container.png&quot; alt=&quot;container&quot; /&gt;&lt;br /&gt;
+得益于AUFS的特性, 每一个对readonly层文件/目录的修改都只会存在于上层的writeable层中。这样由于不存在竞争,多个container可以共享readonly的FS层。 所以Docker将readonly的FS层称作 “image” - 对于container而言整个rootfs都是read-write的，但事实上所有的修改都写入最上层的writeable层中, image不保存用户状态，只用于模板、新建和复制使用。&lt;br /&gt;
+&lt;img src=&quot;/images/docker-introduction/container-image.png&quot; alt=&quot;container&quot; /&gt;&lt;br /&gt;
+上层的image依赖下层的image，因此Docker中把下层的image称作父image，没有父image的image称作base image。因此想要从一个image启动一个container，Docker会先加载这个image和依赖的父images以及base image，用户的进程运行在writeable的layer中。所有parent image中的数据信息以及 ID、网络和lxc管理的资源限制等具container
+的配置，构成一个Docker概念上的container。如下图:&lt;br /&gt;
+&lt;img src=&quot;/images/docker-introduction/container-image2.png&quot; alt=&quot;container&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;3.container资源管理&lt;br /&gt;
+Cgroups（control groups） 实现了对资源的配额和度量。cgroups 的使用非常简单，提供类似文件的接口，在 /cgroup目录下新建一个 文件夹即可新建一个group，在此文件夹中新建task文件，并将pid写入该文件，即可实现对该进程的资源控制。&lt;br /&gt;
+在安装docker前，已经安装了cgroup，所以进入到/sys/fs/cgroup目录下，可以看到cgroup可以限制的资源目录：&lt;br /&gt;
+[root@localhost cgroup]# pwd&lt;br /&gt;
+/sys/fs/cgroup&lt;br /&gt;
+[root@localhost cgroup]# ls
+blkio  cpu  cpuacct  cpu,cpuacct  cpuset  devices  freezer  hugetlb  memory  net_cls  perf_event  systemd&lt;br /&gt;
+groups可以限制blkio、cpu、cpuacct、cpuset、devices、freezer、memory、net_cls、ns九大子系统的资源，以下是每个子系统的详细说明：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- blkio 这个子系统设置限制每个块设备的输入输出控制。例如:磁盘，光盘以及usb等等。
+- cpu 这个子系统使用调度程序为cgroup任务提供cpu的访问。
+- cpuacct 产生cgroup任务的cpu资源报告。
+- cpuset 如果是多核心的cpu，这个子系统会为cgroup任务分配单独的cpu和内存。
+- devices 允许或拒绝cgroup任务对设备的访问。
+- freezer 暂停和恢复cgroup任务。
+- memory 设置每个cgroup的内存限制以及产生内存资源报告。
+- net_cls 标记每个网络包以供cgroup方便使用。
+- ns 名称空间子系统。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;以memory(内存)为例：system.slice目录里已经自动生成了docker相关的文件夹：&lt;br /&gt;
+docker-c549b04fd139dc128d9e74dd05c6bc05526194ab3e60137a316b36c3fb04ba78.scope——这个是 docker启动着的container的资源管理目录&lt;br /&gt;
+docker.service——这个是docker的资源管理目录&lt;br /&gt;
+打开tasks文件，可以看到里面有被管理的进程id号&lt;br /&gt;
+&lt;img src=&quot;/images/docker-introduction/task.png&quot; alt=&quot;container&quot; /&gt; &lt;br /&gt;
+目录中各个文件的作用如下：&lt;br /&gt;
+&lt;img src=&quot;/images/docker-introduction/folder-function.png&quot; alt=&quot;container&quot; /&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 03 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/docker-introduction/</link>
+        <guid isPermaLink="true">http://localhost:4000/docker-introduction/</guid>
+        
+        
+        <category>docker</category>
         
       </item>
     
@@ -700,98 +874,6 @@ CMD /usr/sbin/sshd -D&lt;br /&gt;
         <link>http://localhost:4000/example/</link>
         <guid isPermaLink="true">http://localhost:4000/example/</guid>
         
-        
-      </item>
-    
-      <item>
-        <title>Documentation</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#features&quot; id=&quot;markdown-toc-features&quot;&gt;Features:&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#installation&quot; id=&quot;markdown-toc-installation&quot;&gt;Installation:&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#how-to-delete-old-gh-pages-branch&quot; id=&quot;markdown-toc-how-to-delete-old-gh-pages-branch&quot;&gt;How to delete old &lt;strong&gt;gh-pages&lt;/strong&gt; branch?&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#development&quot; id=&quot;markdown-toc-development&quot;&gt;Development&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#license&quot; id=&quot;markdown-toc-license&quot;&gt;License&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#change-log&quot; id=&quot;markdown-toc-change-log&quot;&gt;Change Log&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#version-08&quot; id=&quot;markdown-toc-version-08&quot;&gt;Version 0.8&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;features&quot;&gt;Features:&lt;/h1&gt;
-&lt;p&gt;Vyaasa is a theme made for blogs with long text paragraphs. Made to be easy on eyes as well.&lt;/p&gt;
-
-&lt;p&gt;Suitable fonts are selected for better readability. Since the theme is created for smartphone reading, the theme is very light so that it loads instantly on a slow data connection.&lt;/p&gt;
-
-&lt;p&gt;The theme comes with pre-installed &lt;strong&gt;analytics&lt;/strong&gt;, &lt;strong&gt;disqus&lt;/strong&gt; and &lt;strong&gt;html compressor&lt;/strong&gt;. But make sure you change key parameters in the &lt;strong&gt;_config.yml&lt;/strong&gt; file.&lt;/p&gt;
-
-&lt;h1 id=&quot;installation&quot;&gt;Installation:&lt;/h1&gt;
-&lt;p&gt;Fork the &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; branch and delete &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch in it. This is important because &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch is used here only to host the blog. You should be using the master branch as the source and create a fresh &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch.&lt;/p&gt;
-
-&lt;p&gt;Watch my video on instlallation&lt;/p&gt;
-&lt;iframe class=&quot;video&quot; src=&quot;https://www.youtube.com/embed/T2nx6tj-ZH4?rel=0?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;how-to-delete-old-gh-pages-branch&quot;&gt;How to delete old &lt;strong&gt;gh-pages&lt;/strong&gt; branch?&lt;/h2&gt;
-&lt;p&gt;After forking the repository, click on &lt;strong&gt;branches&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://blog.webjeda.com/images/delete-github-branch.png&quot; alt=&quot;delete gh-pages branch&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Delete &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch.
-&lt;img src=&quot;http://blog.webjeda.com/images/delete-github-branch-2.png&quot; alt=&quot;delete gh-pages branch&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You have to create a new &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch using the master branch. Go back to the forked repository and create &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; branch.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://blog.webjeda.com/images/create-gh-pages-branch.JPG&quot; alt=&quot;create gh-pages branch&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, go to settings and check the &lt;strong&gt;Github Pages&lt;/strong&gt; section. You should see a URL where the blog is hosted.&lt;/p&gt;
-
-&lt;p&gt;This process will host the theme as a &lt;strong&gt;Project Page&lt;/strong&gt;. You can also download the files for local development.&lt;/p&gt;
-
-&lt;p&gt;The default theme will look like this&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/vyaasa-jekyll-theme-1.png&quot; alt=&quot;webjeda vyaasa jekyll theme&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;A sample post would look like this&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/vyaasa-jekyll-theme-2.png&quot; alt=&quot;webjeda vyaasa jekyll theme sidebar&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This theme is made especially for smartphones.&lt;/p&gt;
-
-&lt;p style=&quot;text-align:center&quot;&gt;&lt;img src=&quot;/images/vyaasa-responsive-jekyll-theme-1.png&quot; alt=&quot;webjeda vyaasa responsive jekyll theme&quot; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;development&quot;&gt;Development&lt;/h1&gt;
-&lt;p&gt;Make changes to the &lt;strong&gt;master&lt;/strong&gt; branch and create a pull request. Do not use &lt;strong&gt;gh-pages&lt;/strong&gt; branch as it is used to host the theme.&lt;/p&gt;
-
-&lt;h1 id=&quot;license&quot;&gt;License&lt;/h1&gt;
-&lt;p&gt;MIT License&lt;/p&gt;
-
-&lt;h1 id=&quot;change-log&quot;&gt;Change Log&lt;/h1&gt;
-
-&lt;h3 id=&quot;version-08&quot;&gt;Version 0.8&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Initial release with a reader-friendly layout.&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 07 May 2016 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/documentation/</link>
-        <guid isPermaLink="true">http://localhost:4000/documentation/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Just another post to show pagination!</title>
-        <description>&lt;p&gt;Only 5 posts are shown on index. Others will be paginated. You can change this number in &lt;strong&gt;_config.yml&lt;/strong&gt; file.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 05 Apr 2016 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/welcome-to-jekyll-2/</link>
-        <guid isPermaLink="true">http://localhost:4000/welcome-to-jekyll-2/</guid>
-        
-        
-        <category>jekyll</category>
-        
-        <category>update</category>
         
       </item>
     

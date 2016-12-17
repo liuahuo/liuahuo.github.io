@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Linux单用户模式及grub使用
+category: linux
+
 ---
 ### 对于遗忘root用户密码的解决方法就是，启动时进入单用户模式，重新修改root用户口令。
 

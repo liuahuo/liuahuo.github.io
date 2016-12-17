@@ -1,6 +1,8 @@
 ---
 layout: post
 title: 进入docker容器的方法
+category: docker
+
 ---
 
 |  登陆容器的方式 | ssh登录|第三方工具(nsenter、nsinit)|docker提供的工具(attach、exec)|
