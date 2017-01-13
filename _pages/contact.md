@@ -69,7 +69,7 @@ You can send me your feedback or suggestion here.
             
         </ul>
         <input type="submit" value="Send" id="submit"/>
-        <input type="hidden" name='redirect_to' value="http://blog.webjeda.com/thank-you/" />
+        //<input type="hidden" name='redirect_to' value="http://blog.webjeda.com/thank-you/" />
         
 </form>
 
