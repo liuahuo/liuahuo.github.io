@@ -22,5 +22,5 @@ show parameter processes   查看当前process配置
 
 alter system set processes=1000 scope=spfile  更改配置，更改完后需要重启数据库。
 
-增加图图。  
+![process-session的关系]({{site.baseurl}}/images/process-session/process-session.png)
  
